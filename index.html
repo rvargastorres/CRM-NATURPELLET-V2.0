@@ -131,7 +131,52 @@ input:checked + .slider:before { transform: translateX(26px); }
     margin-top: 10px;
     font-size: 13px;
     font-weight: bold;
+}/* MODO ONLINE/OFFLINE */
+.mode-toggle-container { 
+    background: linear-gradient(135deg, #5a4a3a 0%, #6b4d32 100%);
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-bottom: 20px;
+    text-align: center;
 }
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e74c3c;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider { background-color: #2ecc71; }
+input:checked + .slider:before { transform: translateX(26px); }
+.mode-status {
+    color: white;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
 
         }
     </style>
@@ -184,7 +229,17 @@ input:checked + .slider:before { transform: translateX(26px); }
             </div>
 
             <div class="controls-section">
-                <h3>⚙️ Controles</h3>
+                <h3>⚙️ Controles</h3> <div class="mode-toggle-container">
+    <label style="color: white !important;">Modo de Trabajo</label>
+    <label class="toggle-switch">
+        <input type="checkbox" id="mode-toggle" onchange="cambiarModo()" checked>
+        <span class="slider"></span>
+    </label>
+    <div class="mode-status" id="mode-status">
+        🟢 ONLINE - Conectado a Supabase
+    </div>
+</div>
+
                 <div class="mode-toggle-container">
     <label style="color: white !important;">Modo de Trabajo</label>
     <label class="toggle-switch">
@@ -886,7 +941,24 @@ function cambiarModo() {
         localStorage.setItem('competidoresBackup', JSON.stringify(competidores));
         alert('✅ Modo Offline activado');
     }
+}// MODO ONLINE/OFFLINE
+let modoOnline = true;
+
+function cambiarModo() {
+    modoOnline = document.getElementById('mode-toggle').checked;
+    const status = document.getElementById('mode-status');
+    
+    if (modoOnline) {
+        status.innerHTML = '🟢 ONLINE - Conectado a Supabase';
+        sincronizarConSupabase();
+    } else {
+        status.innerHTML = '🔴 OFFLINE - Modo Local';
+        localStorage.setItem('clientesBackup', JSON.stringify(clientes));
+        localStorage.setItem('competidoresBackup', JSON.stringify(competidores));
+        alert('✅ Modo Offline activado');
+    }
 }
+
 
     </script>
 </body>
